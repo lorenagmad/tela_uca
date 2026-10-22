@@ -4,12 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>TELA UCA · Tela que contar</title>
-<meta name="description" content="TELA UCA: Technology Enhanced Learning for All. Dpto. de Ingeniería Informática, Campus de Jerez, Universidad de Cádiz.">
+<meta name="description" content="TELA UCA: Technology Enhanced Learning for All. Tecnología explicada con humor desde el Dpto. de Ingeniería Informática, Campus de Jerez, Universidad de Cádiz.">
 <meta property="og:title" content="TELA UCA · Tela que contar">
 <meta property="og:description" content="Tecnología explicada con humor desde el Campus de Jerez.">
 <meta property="og:type" content="website">
-<meta name="theme-color" content="#234868">
+<meta property="og:url" content="https://lorenagmad.github.io/tela_uca/">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#132B42" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="logo.svg" type="image/svg+xml">
+<script>document.documentElement.classList.add('anim')</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
@@ -17,103 +20,173 @@
 :root{
   --head-bg:#FFFFFF;
   --head-ink:#111111;
-  --head-soft:#222222;
-  --band-a:#E6A24A;
-  --band-b:#EAB54C;
+  --head-soft:#2B2B2B;
+  --band:#EAB54C;
+  --band-ink:#173550;
   --blue:#234868;
-  --blue-hover:#2D5880;
+  --surface:#2B557A;
+  --surface-hover:#33618A;
   --on-blue:#FFFFFF;
+  --orange:#F6B533;
+  --on-orange:#132B42;
   --heart:#FF4D5A;
+  --ease-out:cubic-bezier(.2,.8,.2,1);
+  --ease-pop:cubic-bezier(.34,1.56,.64,1);
   color-scheme:light;
-  box-sizing:border-box;
-  padding-top:env(safe-area-inset-top,0px);
-  padding-bottom:env(safe-area-inset-bottom,0px);
   background:var(--blue);
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
     --head-bg:#132B42; --head-ink:#FFFFFF; --head-soft:#D7E1EC;
-    --blue:#1A3650; --blue-hover:#24476A; color-scheme:dark;
+    --blue:#1A3650; --surface:#22456A; --surface-hover:#2A5279; color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
   --head-bg:#132B42; --head-ink:#FFFFFF; --head-soft:#D7E1EC;
-  --blue:#1A3650; --blue-hover:#24476A; color-scheme:dark;
+  --blue:#1A3650; --surface:#22456A; --surface-hover:#2A5279; color-scheme:dark;
 }
-*,*::before,*::after{box-sizing:inherit}
-html,body{margin:0;min-height:100%}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html,body{margin:0}
 body{
   background:var(--blue);color:var(--on-blue);
-  font:400 1rem/1.45 "Open Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  min-height:100vh;display:flex;flex-direction:column;
+  font:400 1rem/1.5 "Open Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;
+  -webkit-tap-highlight-color:transparent;
 }
+a,button{touch-action:manipulation}
+.wrap{width:100%;max-width:34rem;margin:0 auto;
+  padding-left:max(1.25rem,env(safe-area-inset-left));padding-right:max(1.25rem,env(safe-area-inset-right))}
 
 /* Cabecera */
-header{background:var(--head-bg);color:var(--head-ink)}
+header{background:var(--head-bg);color:var(--head-ink);padding-top:env(safe-area-inset-top)}
 .brand{
-  max-width:40rem;margin:0 auto;padding:2.2rem 1.25rem 1.3rem;
-  display:grid;grid-template-columns:1fr auto;align-items:center;gap:.4rem 1rem;
+  padding-top:2.4rem;padding-bottom:1.6rem;
+  display:grid;grid-template-columns:1fr auto;align-items:center;gap:.6rem 1rem;
 }
 h1{
   margin:0;font:800 clamp(2.1rem,10.5vw,3.6rem)/1 "Montserrat","Arial Black",sans-serif;
-  letter-spacing:.18em;white-space:nowrap;
+  letter-spacing:.14em;white-space:nowrap;
 }
-.logo{width:clamp(3.6rem,17vw,5.6rem);height:auto;grid-row:1;grid-column:2}
-.tagline{grid-column:1 / -1;margin:0;font-size:clamp(.78rem,3.3vw,.95rem);color:var(--head-soft);line-height:1.4}
+.logo{width:clamp(4rem,19vw,6rem);height:auto;grid-row:1;grid-column:2;overflow:visible;cursor:pointer}
+.lead{grid-column:1 / -1;margin:.4rem 0 0;font-size:1.2rem;line-height:1.4;font-weight:700;max-width:22em}
+.dept{grid-column:1 / -1;margin:0;font-size:1rem;color:var(--head-soft);line-height:1.45}
+
+/* Hilos del logo: cada trazo entra desde su lado, como una tela que se teje.
+   Las animaciones solo se activan con la clase .anim (la pone el script del <head>);
+   sin script, el logo y el contenido se ven quietos y completos. */
+.hilo{transform-box:fill-box;transform-origin:center}
+.anim .hilo{animation:tejer .8s var(--ease-out) both;animation-delay:calc(var(--i) * 110ms + 150ms)}
+.hilo:nth-child(1){--dx:-90px;--dy:90px}
+.hilo:nth-child(2){--dx:-140px;--dy:0px}
+.hilo:nth-child(3){--dx:90px;--dy:-90px}
+.hilo:nth-child(4){--dx:140px;--dy:0px}
+@keyframes tejer{from{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.92)}to{opacity:1;transform:none}}
+.anim .logo.again .hilo{animation-name:tejer2}
+@keyframes tejer2{from{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.92)}to{opacity:1;transform:none}}
 
 /* Banda de redes */
-.social{
-  background:linear-gradient(90deg,var(--band-a),var(--band-b));
-  display:flex;justify-content:center;gap:2.2rem;padding:.9rem 1rem;
+.social{background:var(--band);color:var(--band-ink)}
+.social ul{list-style:none;margin:0 auto;padding:.7rem 0;display:flex;justify-content:center;gap:clamp(.75rem,6vw,2.4rem)}
+.social a{
+  display:flex;flex-direction:column;align-items:center;gap:.2rem;
+  min-width:4.6rem;padding:.55rem .5rem .45rem;border-radius:14px;
+  color:inherit;text-decoration:none;font-size:.875rem;font-weight:700;
+  transition:transform .16s var(--ease-out),background-color .16s ease;
 }
-.social a{display:grid;place-items:center;width:3.4rem;height:3.4rem;border-radius:14px;color:#fff}
-.social a:hover{background:rgba(255,255,255,.15)}
-.social a:focus-visible{outline:3px solid #fff;outline-offset:2px}
-.social svg{width:2.6rem;height:2.6rem}
+.social svg{width:2.2rem;height:2.2rem}
+.social a:active{transform:scale(.94)}
+.social a:focus-visible{outline:3px solid var(--band-ink);outline-offset:2px}
 
-/* Botones */
-main{flex:1;width:100%;max-width:40rem;margin:0 auto;padding:2rem 1.25rem 2.5rem}
-.links{list-style:none;margin:0;padding:0;display:grid;gap:1.1rem}
-.btn{
-  display:block;text-align:center;text-decoration:none;color:var(--on-blue);
-  border:4px solid var(--on-blue);border-radius:16px;padding:1.05rem 1rem 1.15rem;
-  transition:background .15s ease,transform .15s ease;
+/* Destacados */
+main{flex:1;padding-top:2.2rem;padding-bottom:2.8rem}
+h2{margin:0 0 1rem;font:800 1.15rem/1.2 "Montserrat","Arial Black",sans-serif;letter-spacing:.02em}
+.links{list-style:none;margin:0;padding:0;display:grid;gap:.85rem}
+.card{
+  display:flex;align-items:center;gap:1rem;
+  padding:1.1rem 1.1rem 1.15rem 1.25rem;border-radius:18px;
+  background:var(--surface);color:var(--on-blue);text-decoration:none;
+  transition:transform .16s var(--ease-out),background-color .16s ease;
 }
-.btn:hover{background:var(--blue-hover)}
-.btn:active{transform:scale(.98)}
-.btn:focus-visible{outline:3px solid var(--band-b);outline-offset:4px}
-.btn strong,.btn span{text-decoration:underline;text-underline-offset:.14em;text-decoration-thickness:2px}
-.btn strong{display:block;font-size:clamp(1.2rem,5.4vw,1.85rem);line-height:1.2}
-.btn span{display:inline-block;margin-top:.3rem;font-weight:700;font-size:clamp(.95rem,4.2vw,1.1rem)}
-.btn .tip{display:block;text-decoration:none;font-weight:400;font-size:.85rem;opacity:.85;margin-top:.35rem}
-@media (min-width:900px){ .btn .tip{display:none} }
+.card-text{flex:1;min-width:0}
+.card strong{display:block;font:800 clamp(1.15rem,5vw,1.4rem)/1.2 "Montserrat","Arial Black",sans-serif}
+.card .sub{display:block;margin-top:.3rem;font-size:1rem;line-height:1.4}
+.card .tip{display:block;margin-top:.35rem;font-size:.875rem;opacity:.85}
+@media (min-width:900px){.card .tip{display:none}}
+.arrow{flex:none;width:1.6rem;height:1.6rem;transition:transform .2s var(--ease-out)}
+.card:active{transform:scale(.98)}
+.card:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
 
-footer{text-align:center;padding:0 1.25rem 2rem;font-size:.95rem}
-footer p{margin:.2rem 0}
-.heart{color:var(--heart)}
-footer small{opacity:.75}
-@media (prefers-reduced-motion:reduce){.btn{transition:none}.btn:active{transform:none}}
+.card.premio{background:var(--orange);color:var(--on-orange);padding-top:1.35rem;padding-bottom:1.4rem}
+.card.premio strong{font-size:clamp(1.35rem,6.4vw,1.8rem)}
+.card.premio .sub{font-weight:700}
+.card.premio:focus-visible{outline-color:var(--on-blue)}
+
+@media (hover:hover){
+  .social a:hover{background:rgba(23,53,80,.12)}
+  .card:hover{background:var(--surface-hover)}
+  .card.premio:hover{background:#FFC24A}
+  .card:hover .arrow{transform:translate(3px,-3px)}
+}
+
+/* Pie: el corazón es un botón de "me gusta" */
+footer{text-align:center;padding-bottom:calc(2rem + env(safe-area-inset-bottom))}
+.tag{margin:0;font:800 clamp(1.7rem,8.6vw,2.4rem)/1.1 "Montserrat","Arial Black",sans-serif}
+.love{margin:.35rem 0 1rem;font-size:1rem}
+.like{
+  position:relative;display:inline-grid;place-items:center;
+  width:4.5rem;height:4.5rem;border-radius:50%;border:0;
+  background:var(--surface);color:var(--heart);cursor:pointer;
+  transition:transform .16s var(--ease-out),background-color .16s ease;
+}
+.like svg{width:2.3rem;height:2.3rem}
+.like:active{transform:scale(.92)}
+.like:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
+.like.pop svg{animation:latido .45s var(--ease-pop)}
+@keyframes latido{0%{transform:scale(1)}40%{transform:scale(1.35)}100%{transform:scale(1)}}
+.chispa{
+  position:absolute;left:50%;top:50%;width:.9rem;height:.9rem;margin:-.45rem 0 0 -.45rem;
+  color:var(--heart);pointer-events:none;animation:vuela .7s var(--ease-out) forwards;
+}
+@keyframes vuela{
+  from{opacity:1;transform:rotate(var(--a)) translateY(0) scale(.6)}
+  to{opacity:0;transform:rotate(var(--a)) translateY(-3.2rem) scale(1)}
+}
+.count{min-height:1.5em;margin:.7rem 0 1.2rem;font-size:1rem}
+footer small{display:block;font-size:.875rem;opacity:.8}
+@media (hover:hover){.like:hover{background:var(--surface-hover)}}
+
+/* Entrada escalonada (solo CSS: si algo falla, el contenido sigue visible) */
+.anim .in{animation:subir .6s var(--ease-out) both;animation-delay:calc(var(--d,0) * 70ms)}
+@keyframes subir{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+@media (prefers-reduced-motion:reduce){
+  .hilo,.in,.like.pop svg,.chispa{animation:none !important}
+  .chispa{display:none}
+  .card,.social a,.like,.arrow{transition:none}
+  .card:active,.social a:active,.like:active{transform:none}
+}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="brand">
-    <h1>TELA UCA</h1>
-    <svg class="logo" role="img" aria-label="Logotipo de TELA UCA" viewBox="0 0 740 764" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+  <div class="brand wrap">
+    <h1 class="in">TELA UCA</h1>
+    <svg class="logo" role="img" aria-label="Logotipo de TELA UCA" viewBox="0 0 740 764" xmlns="http://www.w3.org/2000/svg" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
     <g transform="matrix(1,0,0,1,-4156.929164,-86.115)">
-        <g transform="matrix(137.112198,-237.485291,-237.485291,-137.112198,4351.532001,750.404488)">
+        <g class="hilo" style="--i:0"><g transform="matrix(137.112198,-237.485291,-237.485291,-137.112198,4351.532001,750.404488)">
             <path d="M0.166,0.085C0.033,0.013 -0.037,-0.147 0.019,-0.248C0.076,-0.35 0.224,-0.342 0.341,-0.262C0.585,-0.097 0.798,-0.023 1,0.029C0.972,0.145 0.939,0.26 0.884,0.377C0.671,0.314 0.437,0.235 0.166,0.085Z" style="fill:url(#_Linear1);fill-rule:nonzero;"/>
-        </g>
-        <g transform="matrix(653.062378,0,0,-653.062378,4156.929688,648.255805)">
+        </g></g>
+        <g class="hilo" style="--i:1"><g transform="matrix(653.062378,0,0,-653.062378,4156.929688,648.255805)">
             <path d="M0.599,0.181C0.456,0.226 0.335,0.278 0.121,0.221C0.059,0.205 -0,0.139 0,0.087C0,0.035 0.05,0.016 0.103,0.034C0.293,0.097 0.42,0.063 0.575,0.026C0.572,-0.035 0.578,-0.104 0.597,-0.185C0.612,-0.248 0.676,-0.309 0.728,-0.308C0.78,-0.308 0.799,-0.257 0.782,-0.203C0.76,-0.131 0.75,-0.069 0.748,-0.011C0.821,-0.023 0.902,-0.031 0.999,-0.028C0.996,0.029 0.997,0.086 1,0.143C0.906,0.131 0.828,0.133 0.76,0.144C0.768,0.188 0.779,0.232 0.79,0.278C0.734,0.283 0.685,0.295 0.637,0.309C0.624,0.266 0.61,0.224 0.599,0.181Z" style="fill:url(#_Linear2);fill-rule:nonzero;"/>
-        </g>
-        <g transform="matrix(-168.154816,-291.252686,-291.252686,168.154816,4708.503915,387.697968)">
+        </g></g>
+        <g class="hilo" style="--i:2"><g transform="matrix(-168.154816,-291.252686,-291.252686,168.154816,4708.503915,387.697968)">
             <path d="M0.727,-0.022C0.418,0.1 0.242,0.248 0.096,0.397C0.026,0.33 -0.041,0.258 -0.101,0.17C0.062,0.018 0.251,-0.148 0.554,-0.306C0.673,-0.37 0.833,-0.35 0.885,-0.261C0.935,-0.173 0.85,-0.069 0.727,-0.022Z" style="fill:url(#_Linear3);fill-rule:nonzero;"/>
-        </g>
-        <g transform="matrix(658.164368,0,0,-658.164368,4237.978027,342.14091)">
+        </g></g>
+        <g class="hilo" style="--i:3"><g transform="matrix(658.164368,0,0,-658.164368,4237.978027,342.14091)">
             <path d="M0.264,0.171C0.27,0.133 0.272,0.097 0.271,0.062C0.195,0.074 0.109,0.081 0.005,0.073C0.006,0.016 0.004,-0.04 -0,-0.097C0.1,-0.079 0.181,-0.079 0.252,-0.088C0.243,-0.132 0.231,-0.176 0.22,-0.223C0.274,-0.227 0.322,-0.239 0.37,-0.253C0.382,-0.21 0.396,-0.168 0.408,-0.126C0.544,-0.17 0.665,-0.221 0.877,-0.169C0.877,-0.169 0.877,-0.169 0.877,-0.169C0.94,-0.155 1,-0.09 1,-0.038C1,0.014 0.949,0.031 0.895,0.013C0.895,0.013 0.895,0.013 0.895,0.013C0.706,-0.049 0.584,-0.014 0.438,0.024C0.442,0.06 0.443,0.098 0.44,0.14C0.436,0.193 0.387,0.248 0.337,0.253C0.334,0.253 0.331,0.253 0.328,0.253C0.283,0.253 0.257,0.216 0.264,0.171Z" style="fill:url(#_Linear4);fill-rule:nonzero;"/>
-        </g>
+        </g></g>
     </g>
     <defs>
         <linearGradient id="_Linear1" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1,0,0,-1,0,0.026863)"><stop offset="0" style="stop-color:rgb(74,145,188);stop-opacity:1"/><stop offset="1" style="stop-color:rgb(5,76,107);stop-opacity:1"/></linearGradient>
@@ -121,55 +194,106 @@ footer small{opacity:.75}
         <linearGradient id="_Linear3" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1,0,0,-1,0,0.026768)"><stop offset="0" style="stop-color:rgb(250,128,52);stop-opacity:1"/><stop offset="0.19" style="stop-color:rgb(250,128,52);stop-opacity:1"/><stop offset="1" style="stop-color:rgb(253,190,11);stop-opacity:1"/></linearGradient>
         <linearGradient id="_Linear4" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1,0,0,-1,0,-0.000002)"><stop offset="0" style="stop-color:rgb(5,76,107);stop-opacity:1"/><stop offset="0.17" style="stop-color:rgb(5,76,107);stop-opacity:1"/><stop offset="1" style="stop-color:rgb(74,145,188);stop-opacity:1"/></linearGradient>
     </defs>
-</svg>
-    <p class="tagline">Dpto. de Ingeniería Informática, Campus de Jerez.<br>Technology Enhanced Learning for All (T.E.L.A.)</p>
+    </svg>
+    <p class="lead in" style="--d:2">Tecnología explicada con humor desde el Campus de Jerez.</p>
+    <p class="dept in" style="--d:3">Technology Enhanced Learning for All (T.E.L.A.)<br>Dpto. de Ingeniería Informática · Universidad de Cádiz</p>
   </div>
   <nav class="social" aria-label="Redes sociales">
-    <!-- REVISA: usuario de Instagram -->
-    <a href="https://www.instagram.com/tela_uca/" target="_blank" rel="noopener" aria-label="Instagram de TELA UCA">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.3"/><circle cx="17.6" cy="6.4" r="1.2" fill="currentColor" stroke="none"/></svg>
-    </a>
-    <!-- REVISA: usuario de TikTok -->
-    <a href="https://www.tiktok.com/@tela_uca" target="_blank" rel="noopener" aria-label="TikTok de TELA UCA">
-      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 2h-3.4v13.3a2.9 2.9 0 1 1-2.9-2.9c.3 0 .6 0 .9.1V9a6.4 6.4 0 1 0 5.4 6.3V8.6a8 8 0 0 0 4.4 1.4V6.6a4.5 4.5 0 0 1-4.4-4.6z"/></svg>
-    </a>
-    <a href="https://youtube.com/@tela_uca" target="_blank" rel="noopener" aria-label="YouTube de TELA UCA">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="4.5"/><path d="M10 9.2v5.6l4.8-2.8z" fill="currentColor" stroke="none"/></svg>
-    </a>
-    <!-- SPOTIFY: quitar estas dos líneas de comentario cuando esté publicado el primer episodio
-    <a href="https://open.spotify.com/show/6ZrWgcipoGJmz5Di7SWxQI" target="_blank" rel="noopener" aria-label="Spotify de TELA UCA">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M7 9.5c3.5-1 7-.6 10 1M7.6 12.8c2.8-.7 5.6-.4 8 .9M8.3 15.9c2.1-.5 4.2-.3 6 .7"/></svg>
-    </a>
-    -->
+    <ul class="wrap">
+      <!-- REVISA: usuario de Instagram -->
+      <li class="in" style="--d:4"><a href="https://www.instagram.com/tela_uca/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.3"/><circle cx="17.6" cy="6.4" r="1.2" fill="currentColor" stroke="none"/></svg>
+        Instagram</a></li>
+      <!-- REVISA: usuario de TikTok -->
+      <li class="in" style="--d:5"><a href="https://www.tiktok.com/@tela_uca" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 2h-3.4v13.3a2.9 2.9 0 1 1-2.9-2.9c.3 0 .6 0 .9.1V9a6.4 6.4 0 1 0 5.4 6.3V8.6a8 8 0 0 0 4.4 1.4V6.6a4.5 4.5 0 0 1-4.4-4.6z"/></svg>
+        TikTok</a></li>
+      <li class="in" style="--d:6"><a href="https://www.youtube.com/@tela_uca" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="4.5"/><path d="M10 9.2v5.6l4.8-2.8z" fill="currentColor" stroke="none"/></svg>
+        YouTube</a></li>
+      <!-- SPOTIFY: quitar estas dos líneas de comentario cuando esté publicado el primer episodio
+      <li class="in" style="--d:7"><a href="https://open.spotify.com/show/6ZrWgcipoGJmz5Di7SWxQI" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M7 9.5c3.5-1 7-.6 10 1M7.6 12.8c2.8-.7 5.6-.4 8 .9M8.3 15.9c2.1-.5 4.2-.3 6 .7"/></svg>
+        Spotify</a></li>
+      -->
+    </ul>
   </nav>
 </header>
 
-<main>
+<main class="wrap">
+  <h2 class="in" style="--d:6">Lo último de TELA</h2>
   <ul class="links">
-    <li><a class="btn" href="https://www.canalsur.es/multimedia.html?id=2144643" target="_blank" rel="noopener">
-      <strong>Entrevista Canal Sur Radio</strong>
-      <span>Escúchanos en el minuto 39:40</span></a></li>
+    <li class="in" style="--d:7"><a class="card premio" href="https://www.uca.es/noticia/la-universidad-de-cadiz-reconoce-la-excelencia-comunicativa-de-su-comunidad-en-la-primera-edicion-de-los-premios-in-2025/" target="_blank" rel="noopener">
+      <span class="card-text"><strong>1.er premio INfluencia</strong>
+      <span class="sub">Premios IN2025 de la UCA, por nuestras redes sociales</span></span>
+      <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
 
-    <li><a class="btn" href="https://www.uca.es/noticia/la-universidad-de-cadiz-reconoce-la-excelencia-comunicativa-de-su-comunidad-en-la-primera-edicion-de-los-premios-in-2025/" target="_blank" rel="noopener">
-      <strong>Premios IN2025 UCA</strong>
-      <span>1.er premio INfluencia (RRSS)</span></a></li>
+    <li class="in" style="--d:8"><a class="card" href="https://www.canalsur.es/multimedia.html?id=2144643" target="_blank" rel="noopener">
+      <span class="card-text"><strong>Entrevista en Canal Sur Radio</strong>
+      <span class="sub">Escúchanos a partir del minuto 39:40</span></span>
+      <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
 
-    <li><a class="btn" href="https://notebooklm.google.com/notebook/604caf80-7c45-49f3-935b-89b03dfeee4d" target="_blank" rel="noopener">
-      <strong>NotebookLM: Normas APA</strong>
-      <span>Cuaderno con las normas APA</span>
-      <em class="tip">💻 Funciona mejor desde el ordenador</em></a></li>
+    <li class="in" style="--d:9"><a class="card" href="https://notebooklm.google.com/notebook/604caf80-7c45-49f3-935b-89b03dfeee4d" target="_blank" rel="noopener">
+      <span class="card-text"><strong>Normas APA en NotebookLM</strong>
+      <span class="sub">Pregúntale al cuaderno cómo citar</span>
+      <span class="tip">Funciona mejor desde el ordenador</span></span>
+      <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
 
     <!-- Enlace antiguo retirado. Para recuperarlo, descomenta y pon la URL:
-    <li><a class="btn" href="URL" target="_blank" rel="noopener">
-      <strong>Prompts</strong><span>Gemini + NotebookLM</span></a></li>
+    <li class="in" style="--d:10"><a class="card" href="URL" target="_blank" rel="noopener">
+      <span class="card-text"><strong>Prompts</strong><span class="sub">Gemini + NotebookLM</span></span>
+      <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></li>
     -->
   </ul>
 </main>
 
-<footer>
-  <p>Dadle mucho amor <span class="heart" aria-hidden="true">❤️</span> #TelaDeLikes</p>
+
+<footer class="wrap">
+  <p class="tag in" style="--d:10">#TelaDeLikes</p>
+  <p class="love in" style="--d:11">Dadle mucho amor</p>
+  <button class="like in" style="--d:12" type="button" aria-label="Dar un me gusta a TELA UCA">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.3 3 4.5 6.7 4.5c2.1 0 3.6 1.1 5.3 3 1.7-1.9 3.2-3 5.3-3 3.7 0 5.8 3.8 4.3 7.2C19.5 16.4 12 21 12 21z"/></svg>
+  </button>
+  <p class="count" aria-live="polite"></p>
   <small>Universidad de Cádiz · Campus de Jerez</small>
 </footer>
 
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Tocar el logo lo vuelve a tejer
+  const logo = document.querySelector('.logo');
+  logo.addEventListener('click', () => {
+    if (reduce) return;
+    logo.classList.toggle('again');
+    logo.querySelectorAll('.hilo').forEach(h => h.style.animationDelay = (h.style.getPropertyValue('--i') * 90) + 'ms');
+  });
+
+  // Me gusta: latido, corazones que salen y un contador propio de este dispositivo
+  const like = document.querySelector('.like');
+  const count = document.querySelector('.count');
+  const heart = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.3 3 4.5 6.7 4.5c2.1 0 3.6 1.1 5.3 3 1.7-1.9 3.2-3 5.3-3 3.7 0 5.8 3.8 4.3 7.2C19.5 16.4 12 21 12 21z"/></svg>';
+  let n = 0;
+  try { n = parseInt(localStorage.getItem('tela-likes'), 10) || 0; } catch (e) {}
+  const show = () => { count.textContent = n ? `¡Nos has dado ${n} ${n === 1 ? 'like' : 'likes'}! Thanks!` : ''; };
+  show();
+  like.addEventListener('click', () => {
+    n++;
+    try { localStorage.setItem('tela-likes', n); } catch (e) {}
+    show();
+    if (reduce) return;
+    like.classList.remove('pop'); void like.offsetWidth; like.classList.add('pop');
+    for (let i = 0; i < 6; i++) {
+      const s = document.createElement('span');
+      s.className = 'chispa'; s.innerHTML = heart;
+      s.style.setProperty('--a', (i * 60 - 150 + Math.random() * 20) + 'deg');
+      like.appendChild(s);
+      s.addEventListener('animationend', () => s.remove());
+    }
+    if (navigator.vibrate) navigator.vibrate(12);
+  });
+})();
+</script>
 </body>
 </html>
